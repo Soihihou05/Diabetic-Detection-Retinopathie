@@ -57,3 +57,108 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+# 👁️ RetinoAI - Détection de Rétinopathie Diabétique Assistée par IA
+
+**RetinoAI** est une plateforme web médicale conçue pour aider les ophtalmologues à gérer leurs patients et à détecter précocement la rétinopathie diabétique.
+
+L'application combine la robustesse de **Laravel** pour la gestion des dossiers médicaux et la puissance de **Python (Deep Learning)** pour l'analyse d'images de fond d'œil.
+
+---
+
+## 🏗️ Architecture du Projet
+
+Le projet fonctionne avec une architecture hybride :
+
+1.  **Frontend & Backend (Laravel)** : Gère l'authentification des médecins, les dossiers patients (CRUD), le stockage des images et l'interface utilisateur.
+2.  **Micro-service IA (Python/Flask)** : Une API locale qui reçoit l'image, la traite via un modèle **Hugging Face Transformers**, et renvoie le diagnostic.
+
+| Composant | Technologie | Rôle |
+| :--- | :--- | :--- |
+| **Web Framework** | Laravel 10+ | Interface, BDD, Logique métier |
+| **Base de Données** | MySQL / MariaDB | Stockage Patients & Scans |
+| **Frontend** | Blade + TailwindCSS | Interface Utilisateur |
+| **API IA** | Python (Flask) | Micro-service de prédiction |
+| **Modèle IA** | PyTorch + Transformers | Classification (Sain, Léger, Modéré, Sévère...) |
+
+---
+
+## 📋 Prérequis
+
+Avant de commencer, assurez-vous d'avoir installé :
+* PHP >= 8.1 & Composer
+* Python >= 3.9 & Pip
+* Node.js & NPM (pour le style)
+* MySQL (ou un serveur local type XAMPP/Laragon)
+
+---
+
+## 🚀 Installation
+
+### Étape 1 : Installation du Backend (Laravel)
+
+1.  **Cloner le dépôt :**
+    ```bash
+    git clone [https://github.com/votre-utilisateur/projet-ia-retino.git](https://github.com/votre-utilisateur/projet-ia-retino.git)
+    cd projet-ia-retino
+    ```
+
+2.  **Installer les dépendances PHP :**
+    ```bash
+    composer install
+    ```
+
+3.  **Configurer l'environnement :**
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
+    *Ouvrez le fichier `.env` et configurez vos accès à la base de données (`DB_DATABASE`, `DB_USERNAME`, etc.).*
+
+4.  **Préparer la base de données et les fichiers :**
+    ```bash
+    php artisan migrate
+    php artisan storage:link  # CRUCIAL : Pour que les images soient visibles
+    ```
+
+5.  **Compiler les assets (CSS/JS) :**
+    ```bash
+    npm install && npm run build
+    ```
+
+---
+
+### Étape 2 : Installation de l'IA (Python)
+
+Le code de l'IA se trouve dans le dossier `python_api/`.
+
+1.  **Aller dans le dossier :**
+    ```bash
+    cd python_api
+    ```
+
+2.  **Créer un environnement virtuel (Recommandé) :**
+    * *Windows :* `python -m venv venv`
+    * *Mac/Linux :* `python3 -m venv venv`
+
+3.  **Activer l'environnement :**
+    * *Windows :* `.\venv\Scripts\activate`
+    * *Mac/Linux :* `source venv/bin/activate`
+
+4.  **Installer les dépendances IA :**
+    ```bash
+    pip install -r requirements.txt
+    ```
+    *(Cela installera Flask, PyTorch, Transformers et Pillow).*
+
+---
+
+## ▶️ Démarrage de l'Application
+
+Puisque l'application utilise deux serveurs (Web et IA), vous devez ouvrir **deux terminaux** différents.
+
+### Terminal 1 : Lancer le Site Web (Laravel)
+À la racine du projet :
+```bash
+php artisan serve

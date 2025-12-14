@@ -26,6 +26,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Route pour que le médecin enregistre SON diagnostic final (Validation)
     Route::put('/scans/{scan}', [ScanController::class, 'update'])->name('scans.update');
+    Route::post('/scans/{scan}/analyze', [ScanController::class, 'analyze'])->name('scans.analyze');
+    Route::post('/scans/{scan}/update-image', [ScanController::class, 'updateImage'])->name('scans.updateImage');
 });
 
 Route::middleware('auth')->group(function () {
