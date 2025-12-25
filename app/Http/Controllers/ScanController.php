@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ScanController extends Controller
 {
@@ -195,13 +196,15 @@ class ScanController extends Controller
             // On récupère le fichier existant
             $fullPath = storage_path('app/public/' . $scan->image_path);
             $fileContent = file_get_contents($fullPath);
-            
+
             // On retrouve le nom du fichier (juste pour l'envoi)
             $fileName = basename($scan->image_path);
 
             // Appel API
             $response = Http::attach(
-                'file', $fileContent, $fileName
+                'file',
+                $fileContent,
+                $fileName
             )->post('http://127.0.0.1:5001/predict');
 
             if ($response->successful()) {
@@ -252,7 +255,7 @@ class ScanController extends Controller
         $eye = $scan->eye_side; // On garde le même œil
         $timestamp = time();
         $extension = $request->file('image')->getClientOriginalExtension();
-        
+
         $fileName = "{$cleanName}_{$eye}_{$typeDiabete}_{$timestamp}.{$extension}";
 
         // 4. Enregistrer la nouvelle image
@@ -267,5 +270,31 @@ class ScanController extends Controller
         ]);
 
         return back()->with('success', 'Image remplacée. Veuillez relancer l\'analyse IA.');
+    }
+
+    //Generation du rapport, format PDF
+    public function downloadPdf(Scan $scan)
+    {
+        // 1. Sécurité
+        if ($scan->patient->user_id !== Auth::id()) abort(403);
+
+        // 2. Préparation des données
+        $data = [
+            'scan' => $scan,
+            'patient' => $scan->patient,
+            'doctor' => Auth::user(),
+            'date' => now()->format('d/m/Y'),
+            // Astuce pour l'image en PDF : convertir en base64 pour éviter les bugs de chemin
+            'imagePath' => public_path('storage/' . $scan->image_path),
+        ];
+
+        // 3. Génération du PDF
+        $pdf = Pdf::loadView('scans.pdf', $data);
+
+        // Optionnel : Configurer le format papier
+        $pdf->setPaper('A4', 'portrait');
+
+        // 4. Téléchargement direct
+        return $pdf->download('Rapport_Medical_' . $scan->patient->last_name . '.pdf');
     }
 }

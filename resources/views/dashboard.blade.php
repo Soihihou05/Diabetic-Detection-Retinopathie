@@ -30,7 +30,7 @@
                     </div>
                     <div>
                         <div class="text-gray-500 text-sm font-medium">Analyses IA</div>
-                        <div class="text-2xl font-bold text-gray-800">0</div>
+                        <div class="text-2xl font-bold text-gray-800">{{ $totScans }}</div>
                     </div>
                 </div>
 
@@ -40,7 +40,7 @@
                     </div>
                     <div>
                         <div class="text-gray-500 text-sm font-medium">Cas Critiques</div>
-                        <div class="text-2xl font-bold text-gray-800">-</div>
+                        <div class="text-2xl font-bold text-gray-800">{{ $criticalScans }}</div>
                     </div>
                 </div>
             </div>

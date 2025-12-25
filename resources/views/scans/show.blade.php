@@ -156,8 +156,36 @@
                             <div class="mb-4">
                                 <label class="block font-bold text-gray-700 text-sm mb-2">Prescription /
                                     Traitement</label>
-                                <textarea name="prescription" rows="3" class="w-full border-gray-300 rounded-md shadow-sm"
-                                    placeholder="Ex: Laser, injection, surveillance dans 6 mois...">{{ $scan->prescription }}</textarea>
+
+                                @if ($scan->suggested_treatment && !$scan->prescription)
+                                    <div class="mb-2 bg-blue-50 border border-blue-100 rounded-md p-3 flex items-start gap-3"
+                                        id="suggestionBox">
+                                        <div class="text-blue-500 mt-0.5">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-grow">
+                                            <span
+                                                class="text-xs font-bold text-blue-600 uppercase tracking-wide">Suggestion
+                                                du protocole</span>
+                                            <p class="text-sm text-gray-700 mt-1" id="suggestionText">
+                                                {{ $scan->suggested_treatment }}</p>
+                                        </div>
+
+                                        <button type="button" onclick="applySuggestion()"
+                                            class="text-xs bg-white border border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white px-2 py-1 rounded transition shadow-sm font-semibold">
+                                            Utiliser
+                                        </button>
+                                    </div>
+                                @endif
+
+                                <textarea name="prescription" id="prescriptionField" rows="3"
+                                    class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    placeholder="Ex: Laser, injection, surveillance...">{{ $scan->prescription }}</textarea>
                             </div>
 
                             <div class="mb-6">
@@ -192,4 +220,14 @@
             </div>
         </div>
     </div>
+    <script>
+        function applySuggestion() {
+            var text = document.getElementById('suggestionText').innerText;
+            var field = document.getElementById('prescriptionField');
+            field.value = text;
+
+            // Optionnel : masquer la suggestion après clic pour faire propre
+            // document.getElementById('suggestionBox').style.display = 'none';
+        }
+    </script>
 </x-app-layout>

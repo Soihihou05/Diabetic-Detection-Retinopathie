@@ -171,9 +171,15 @@
                                     <div class="p-4">
                                         <p class="text-xs text-gray-500 mb-1">
                                             {{ $scan->created_at->format('d/m/Y à H:i') }}</p>
-                                        <p class="font-bold text-gray-800">
-                                            {{ $scan->ai_result ?? 'En attente d\'analyse' }}
-                                        </p>
+                                        <div class="font-bold text-gray-800 mb-2">
+                                            @if ($scan->final_diagnosis)
+                                                <span class="text-green-600">{{ $scan->final_diagnosis }}</span>
+                                            @elseif($scan->ai_result)
+                                                <span class="text-indigo-600">{{ $scan->ai_result }}</span>
+                                            @else
+                                                <span class="text-gray-400 italic">Analyse en cours...</span>
+                                            @endif
+                                        </div>
 
                                         <div class="mt-4 flex justify-between items-center pt-2 border-t">
                                             <span class="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">

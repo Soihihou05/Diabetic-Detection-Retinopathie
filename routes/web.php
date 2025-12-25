@@ -16,7 +16,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('patients', P::class);
     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+    Route::get('/scans/{scan}/pdf', [ScanController::class, 'downloadPdf'])->name('scans.pdf');
+    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     Route::get('/patients/{patient}/scan/new', [ScanController::class, 'create'])->name('scans.create');
     // Route pour envoyer l'image : /patients/{id}/scan
 

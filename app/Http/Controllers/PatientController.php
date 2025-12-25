@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Patient;
+use App\Models\Scan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,9 +24,32 @@ class PatientController extends Controller
     public function index()
     {
         //
-        $totPatients = Patient::where('user_id', Auth::id())->count();
-        $patients = Patient::where('user_id', Auth::id())->latest()->paginate(5);
-        return view('dashboard', compact('patients', 'totPatients'));
+
+        $userId = Auth::id();
+
+        // 1. Total Patients
+        $totPatients = Patient::where('user_id', $userId)->count();
+
+        // 2. Total Scans (Tous les scans de MES patients)
+        // On utilise whereHas pour vérifier que le scan appartient à un de mes patients
+        $totScans = Scan::whereHas('patient', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->count();
+
+        // 3. Cas Critiques (Global)
+        // On filtre les scans de mes patients qui ont un résultat grave
+        $criticalScans = Scan::whereHas('patient', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->where(function ($query) {
+            $query->where('ai_result', 'LIKE', '%Modérée%')
+                ->orWhere('ai_result', 'LIKE', '%Sévère%')
+                ->orWhere('ai_result', 'LIKE', '%Proliférante%');
+        })->count();
+
+        // Si tu as aussi besoin de la liste paginée pour le tableau en bas
+        $patients = Patient::where('user_id', $userId)->latest()->paginate(10);
+
+        return view('dashboard', compact('totPatients', 'totScans', 'criticalScans', 'patients'));
     }
 
     /**
@@ -62,7 +86,7 @@ class PatientController extends Controller
 
         Patient::create($data);
 
-        return redirect()->route('patients.index')
+        return redirect()->route('dashboard')
             ->with('success', 'Patient ajouté avec succès.');
     }
 
@@ -109,7 +133,7 @@ class PatientController extends Controller
 
         $patient->update($request->all());
 
-        return redirect()->route('patients.index')
+        return redirect()->route('patients.show',$patient->id)
             ->with('success', 'Dossier mis à jour.');
     }
 
@@ -122,7 +146,7 @@ class PatientController extends Controller
         $this->authorizeAccess($patient);
         $patient->delete();
 
-        return redirect()->route('patients.index')
+        return redirect()->route('dashboard')
             ->with('success', 'Patient supprimé.');
     }
 
