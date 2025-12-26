@@ -200,19 +200,58 @@
                             </button>
                         </form>
                     </div>
-
                     @if ($scan->status == 'valide')
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 text-center">
-                            <p class="text-sm text-gray-600 mb-3">Le diagnostic est validé.</p>
-                            <button onclick="alert('Nous installerons le générateur PDF à la prochaine étape !')"
-                                class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 cursor-pointer">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm mt-6">
+
+                            <h3 class="text-gray-800 font-bold mb-2 flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
                                     </path>
                                 </svg>
-                                Télécharger Rapport PDF
-                            </button>
+                                Validation & Signature
+                            </h3>
+
+                            <p class="text-sm text-gray-500 mb-4 text-center">
+                                Veuillez signer ci-dessous pour générer le rapport PDF officiel.
+                            </p>
+
+                            <div
+                                class="border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 relative mx-auto max-w-md">
+                                <canvas id="signature-canvas"
+                                    class="w-full h-48 cursor-crosshair touch-none"></canvas>
+
+                                <div
+                                    class="absolute bottom-2 right-2 text-xs text-gray-400 pointer-events-none select-none">
+                                    Signez ici (Souris ou Doigt)
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-center mt-4 max-w-md mx-auto">
+                                <button type="button" id="clear-signature"
+                                    class="text-sm text-red-500 hover:text-red-700 underline decoration-red-500/30">
+                                    Effacer / Recommencer
+                                </button>
+
+                                <form id="signature-form" action="{{ route('scans.pdf', $scan->id) }}"
+                                    method="POST">
+                                    @csrf
+
+                                    <input type="hidden" name="signature" id="signature-input">
+
+                                    <button type="button" id="save-signature"
+                                        class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0L8 8m4-4v12">
+                                            </path>
+                                        </svg>
+                                        Valider & Télécharger
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     @endif
 
@@ -220,14 +259,75 @@
             </div>
         </div>
     </div>
-    <script>
-        function applySuggestion() {
-            var text = document.getElementById('suggestionText').innerText;
-            var field = document.getElementById('prescriptionField');
-            field.value = text;
+    @section('script')
+        <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var canvas = document.getElementById('signature-canvas');
+                var form = document.getElementById('signature-form');
+                var input = document.getElementById('signature-input');
+                var clearBtn = document.getElementById('clear-signature');
+                var saveBtn = document.getElementById('save-signature');
 
-            // Optionnel : masquer la suggestion après clic pour faire propre
-            // document.getElementById('suggestionBox').style.display = 'none';
-        }
-    </script>
+                if (canvas) {
+                    // 1. Initialisation du Pad
+                    // On gère le redimensionnement pour éviter le flou sur écran rétina
+                    function resizeCanvas() {
+                        var ratio = Math.max(window.devicePixelRatio || 1, 1);
+                        canvas.width = canvas.offsetWidth * ratio;
+                        canvas.height = canvas.offsetHeight * ratio;
+                        canvas.getContext("2d").scale(ratio, ratio);
+                    }
+
+                    // Appel au chargement et au redimensionnement de la fenêtre
+                    window.onresize = resizeCanvas;
+                    resizeCanvas();
+
+                    var signaturePad = new SignaturePad(canvas, {
+                        backgroundColor: 'rgba(255, 255, 255, 0)', // Fond transparent
+                        penColor: "rgb(0, 0, 0)" // Encre noire
+                    });
+
+                    // 2. Bouton Effacer
+                    clearBtn.addEventListener('click', function() {
+                        signaturePad.clear();
+                    });
+
+                    // 3. Bouton Valider
+                    saveBtn.addEventListener('click', function() {
+                        if (signaturePad.isEmpty()) {
+                            alert("Veuillez apposer votre signature avant de télécharger le rapport.");
+                        } else {
+                            // On récupère l'image en Base64
+                            var data = signaturePad.toDataURL('image/png');
+                            // On la met dans l'input caché
+                            input.value = data;
+                            // On soumet le formulaire
+                            form.submit();
+
+                            // Petit effet visuel optionnel
+                            saveBtn.innerText = "Génération en cours...";
+                            saveBtn.disabled = true;
+
+                            // On réactive le bouton après quelques secondes (au cas où le téléchargement échoue)
+                            setTimeout(() => {
+                                saveBtn.innerText = "Valider & Télécharger";
+                                saveBtn.disabled = false;
+                            }, 5000);
+                        }
+                    });
+                }
+            });
+        </script>
+        <script>
+            function applySuggestion() {
+                var text = document.getElementById('suggestionText').innerText;
+                var field = document.getElementById('prescriptionField');
+                field.value = text;
+
+                // Optionnel : masquer la suggestion après clic pour faire propre
+                // document.getElementById('suggestionBox').style.display = 'none';
+            }
+        </script>
+    @endsection
 </x-app-layout>

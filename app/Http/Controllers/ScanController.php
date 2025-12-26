@@ -273,12 +273,25 @@ class ScanController extends Controller
     }
 
     //Generation du rapport, format PDF
-    public function downloadPdf(Scan $scan)
+    public function downloadPdf(Request $request, Scan $scan)
     {
         // 1. Sécurité
         if ($scan->patient->user_id !== Auth::id()) abort(403);
 
         // 2. Préparation des données
+        //  Validation : on vérifie juste qu'on a reçu le dessin
+        $request->validate(['signature' => 'required']);
+
+        // On récupère directement le code Base64 (ex: "data:image/png;base64,iVBOR...")
+        // C'est ça qui contient l'image. On ne le stocke pas, on le passe à la vue.
+        $signatureData = $request->input('signature');
+        //////////////////////////////////////////////////////////
+        $cleanName = Str::slug($scan->patient->last_name . '-' . $scan->patient->first_name);
+        $typeDiabete = Str::slug($scan->patient->diabetes_type ?? 'inconnu');
+        $eye = $scan->eye_side; // On garde le même œil
+        $timestamp = time();
+
+        $fileName = "{$cleanName}_{$eye}_{$typeDiabete}_{$timestamp}.pdf";
         $data = [
             'scan' => $scan,
             'patient' => $scan->patient,
@@ -286,6 +299,7 @@ class ScanController extends Controller
             'date' => now()->format('d/m/Y'),
             // Astuce pour l'image en PDF : convertir en base64 pour éviter les bugs de chemin
             'imagePath' => public_path('storage/' . $scan->image_path),
+            'signatureData' => $signatureData,
         ];
 
         // 3. Génération du PDF
@@ -295,6 +309,6 @@ class ScanController extends Controller
         $pdf->setPaper('A4', 'portrait');
 
         // 4. Téléchargement direct
-        return $pdf->download('Rapport_Medical_' . $scan->patient->last_name . '.pdf');
+        return $pdf->download('Rapport_Medical_' . $fileName);
     }
 }
