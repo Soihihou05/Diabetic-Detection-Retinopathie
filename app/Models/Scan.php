@@ -41,29 +41,28 @@ class Scan extends Model
 
         if (!$result) return null;
 
-        // Logique de suggestion (Protocoles standards simplifiés)
-        // Tu peux adapter ces textes selon les recommandations médicales réelles
+        // On garde la détection en français car c'est ce qui est stocké en base de données
         
-        if (str_contains($result, 'Sain')) {
-            return "Pas de traitement nécessaire. Contrôle annuel recommandé. Maintien de l'équilibre glycémique et tensionnel.";
+        if (str_contains($result, 'Sain') || str_contains($result, 'Pas de')) {
+            return __("Pas de traitement nécessaire. Contrôle annuel recommandé. Maintien de l'équilibre glycémique et tensionnel.");
         }
 
         if (str_contains($result, 'Légère')) {
-            return "Surveillance du fond d'œil tous les 6 à 12 mois. Renforcement du contrôle diabétique.";
+            return __("Surveillance du fond d'œil tous les 6 à 12 mois. Renforcement du contrôle diabétique.");
         }
 
         if (str_contains($result, 'Modérée')) {
-            return "Surveillance rapprochée (tous les 3 à 6 mois). Bilan complet des facteurs de risque.";
+            return __("Surveillance rapprochée (tous les 3 à 6 mois). Bilan complet des facteurs de risque.");
         }
 
         if (str_contains($result, 'Sévère')) {
-            return "Avis ophtalmologique urgent. Envisager une panphotocoagulation (PPR) au laser selon l'évolution.";
+            return __("Avis ophtalmologique urgent. Envisager une panphotocoagulation (PPR) au laser selon l'évolution.");
         }
 
         if (str_contains($result, 'Proliférante')) {
-            return "Urgence thérapeutique : Panphotocoagulation (PPR) immédiate ou injections intravitréennes (Anti-VEGF). Vitrectomie si hémorragie.";
+            return __("Urgence thérapeutique : Panphotocoagulation (PPR) immédiate ou injections intravitréennes (Anti-VEGF). Vitrectomie si hémorragie.");
         }
 
-        return "Aucune suggestion standard disponible.";
+        return __("Aucune suggestion standard disponible.");
     }
 }

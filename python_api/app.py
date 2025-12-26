@@ -19,11 +19,11 @@ except Exception as e:
     model = None
 
 CLASSES = {
-    0: "Stade 0 : Sain (No DR)",
-    1: "Stade 1 : Légère (Mild)",
-    2: "Stade 2 : Modérée (Moderate)",
-    3: "Stade 3 : Sévère (Severe)",
-    4: "Stade 4 : Proliférante (Proliferative)"
+    0: "Stade 0 : Sain ",
+    1: "Stade 1 : Légère ",
+    2: "Stade 2 : Modérée ",
+    3: "Stade 3 : Sévère ",
+    4: "Stade 4 : Proliférante "
 }
 
 @app.route('/predict', methods=['POST'])
