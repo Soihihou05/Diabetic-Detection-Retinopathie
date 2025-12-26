@@ -33,6 +33,10 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
+            <a href="{{ route('lang.switch', app()->getLocale() == 'fr' ? 'en' : 'fr') }}" 
+                   class="me-4 px-3 py-1 border border-gray-300 rounded text-sm font-bold text-gray-600 hover:bg-gray-100 transition mr-3">
+                    {{ app()->getLocale() == 'fr' ? 'EN' : 'FR' }}
+                </a>
             @if (Route::has('password.request'))
                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}

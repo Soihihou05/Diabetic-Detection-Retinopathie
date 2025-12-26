@@ -4,10 +4,14 @@ use App\Http\Controllers\PatientController as P;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScanController;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cookie;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+
 
 Route::get('/dashboard', [P::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%Route des Patients %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,5 +40,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('lang/{lang}', function ($lang) {
+    if (in_array($lang, ['en', 'fr'])) {
+        // On force un cookie manuel qui dure 1 an (indépendant de la session)
+        Cookie::queue('locale', $lang, 60 * 24 * 365);
+    }
+    return back();
+})->name('lang.switch');
 
 require __DIR__ . '/auth.php';

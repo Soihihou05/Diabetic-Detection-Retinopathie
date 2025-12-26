@@ -2,10 +2,10 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Analyse : {{ $scan->patient->last_name }} {{ $scan->patient->first_name }}
+                {{ __('Analysis:') }} {{ $scan->patient->last_name }} {{ $scan->patient->first_name }}
             </h2>
             <a href="{{ route('patients.show', $scan->patient_id) }}" class="text-sm text-gray-500 hover:text-gray-900">
-                &larr; Retour au dossier patient
+                &larr; {{ __('Back to patient file') }}
             </a>
         </div>
     </x-slot>
@@ -23,10 +23,11 @@
 
                         <div
                             class="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">
-                            {{ $scan->eye_side == 'OD' ? 'Œil Droit' : 'Œil Gauche' }}
+                            {{ $scan->eye_side == 'OD' ? __('Right Eye') : __('Left Eye') }}
                         </div>
                         <div class="absolute bottom-4 left-4 text-gray-400 text-xs">
-                            Scanné le {{ $scan->created_at->format('d/m/Y à H:i') }}
+                            {{ __('Scanned on') }} {{ $scan->created_at->format('d/m/Y') }} {{ __('at') }}
+                            {{ $scan->created_at->format('H:i') }}
                         </div>
                     </div>
 
@@ -40,7 +41,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                                 </svg>
-                                Erreur d'image ? Remplacer le fichier
+                                {{ __('Image error? Replace file') }}
                             </span>
                             <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }"
                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,15 +58,15 @@
 
                                 <div class="flex items-center gap-4">
                                     <div class="flex-grow">
-                                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nouvelle
-                                            image</label>
+                                        <label
+                                            class="block text-xs font-bold text-gray-500 uppercase mb-1">{{ __('New image') }}</label>
                                         <input type="file" name="image" required
                                             class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                                     </div>
 
                                     <button type="submit"
                                         class="bg-indigo-600 text-white px-4 py-2 rounded text-sm font-bold hover:bg-indigo-700 transition mt-5">
-                                        Uploader
+                                        {{ __('Upload') }}
                                     </button>
                                 </div>
                                 <p class="text-xs text-red-500 mt-2 flex items-center">
@@ -74,7 +75,7 @@
                                             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
                                         </path>
                                     </svg>
-                                    Attention : L'analyse IA sera réinitialisée.
+                                    {{ __('Warning: AI analysis will be reset.') }}
                                 </p>
                             </form>
                         </div>
@@ -85,15 +86,15 @@
                 <div class="lg:w-1/3 flex flex-col gap-6 overflow-y-auto">
 
                     <div
-                        class="bg-white p-6 rounded-lg shadow-md border-t-4 {{ $scan->ai_result ? 'border-purple-600' : 'border-gray-300' }}">
+                        class="bg-white p-6 rounded-lg shadow-md border-t-4 {{ __($scan->ai_result) ? 'border-purple-600' : 'border-gray-300' }}">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider">Analyse Intelligence
-                                Artificielle</h3>
+                            <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider">
+                                {{ __('Artificial Intelligence Analysis') }}</h3>
 
                             <form action="{{ route('scans.analyze', $scan->id) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="text-gray-400 hover:text-indigo-600 transition"
-                                    title="Relancer l'analyse">
+                                    title="{{ __('Relaunch analysis') }}">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
@@ -104,12 +105,13 @@
                         </div>
                         @if ($scan->ai_result)
                             <div class="flex items-center justify-between mb-2">
-                                <span class="text-2xl font-bold text-gray-800">{{ $scan->ai_result }}</span>
+                                <span class="text-2xl font-bold text-gray-800">{{ __($scan->ai_result) }}</span>
                                 <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold">
-                                    {{ $scan->ai_confidence }}% Confiance
+                                    {{ $scan->ai_confidence }}% {{ __('Confidence') }}
                                 </span>
                             </div>
-                            <p class="text-sm text-gray-600">Détection automatique basée sur le modèle Deep Learning.
+                            <p class="text-sm text-gray-600">
+                                {{ __('Automatic detection based on Deep Learning model.') }}
                             </p>
                         @else
                             <div class="flex items-center text-orange-500 animate-pulse">
@@ -117,15 +119,17 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                <span>Analyse en attente...</span>
+                                <span>{{ __('Analysis pending...') }}</span>
                             </div>
-                            <p class="text-xs text-gray-400 mt-2">Le script Python n'a pas encore traité cette image.
+                            <p class="text-xs text-gray-400 mt-2">
+                                {{ __('The Python script has not processed this image yet.') }}
                             </p>
                         @endif
                     </div>
 
                     <div class="bg-white p-6 rounded-lg shadow-md flex-grow">
-                        <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-4">Validation Clinique
+                        <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-4">
+                            {{ __('Clinical Validation') }}
                         </h3>
 
                         <form action="{{ route('scans.update', $scan->id) }}" method="POST">
@@ -133,29 +137,30 @@
                             @method('PUT')
 
                             <div class="mb-4">
-                                <label class="block font-bold text-gray-700 text-sm mb-2">Diagnostic Final</label>
+                                <label
+                                    class="block font-bold text-gray-700 text-sm mb-2">{{ __('Final Diagnosis') }}</label>
                                 <select name="final_diagnosis"
                                     class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <option value="">Sélectionner...</option>
+                                    <option value="">{{ __('Select...') }}</option>
                                     <option value="Pas de Rétinopathie"
-                                        {{ $scan->final_diagnosis == 'Pas de Rétinopathie' ? 'selected' : '' }}>Pas de
-                                        Rétinopathie (Sain)</option>
+                                        {{ $scan->final_diagnosis == 'Pas de Rétinopathie' ? 'selected' : '' }}>
+                                        {{ __('No Retinopathy (Healthy)') }}</option>
                                     <option value="Légère" {{ $scan->final_diagnosis == 'Légère' ? 'selected' : '' }}>
-                                        Rétinopathie Légère</option>
+                                        {{ __('Mild Retinopathy') }}</option>
                                     <option value="Modérée"
-                                        {{ $scan->final_diagnosis == 'Modérée' ? 'selected' : '' }}>Rétinopathie
-                                        Modérée</option>
+                                        {{ $scan->final_diagnosis == 'Modérée' ? 'selected' : '' }}>
+                                        {{ __('Moderate Retinopathy') }}</option>
                                     <option value="Sévère" {{ $scan->final_diagnosis == 'Sévère' ? 'selected' : '' }}>
-                                        Rétinopathie Sévère</option>
+                                        {{ __('Severe Retinopathy') }}</option>
                                     <option value="Proliférante"
-                                        {{ $scan->final_diagnosis == 'Proliférante' ? 'selected' : '' }}>Rétinopathie
-                                        Proliférante</option>
+                                        {{ $scan->final_diagnosis == 'Proliférante' ? 'selected' : '' }}>
+                                        {{ __('Proliferative Retinopathy') }}</option>
                                 </select>
                             </div>
 
                             <div class="mb-4">
-                                <label class="block font-bold text-gray-700 text-sm mb-2">Prescription /
-                                    Traitement</label>
+                                <label
+                                    class="block font-bold text-gray-700 text-sm mb-2">{{ __('Prescription / Treatment') }}</label>
 
                                 @if ($scan->suggested_treatment && !$scan->prescription)
                                     <div class="mb-2 bg-blue-50 border border-blue-100 rounded-md p-3 flex items-start gap-3"
@@ -170,33 +175,33 @@
                                         </div>
                                         <div class="flex-grow">
                                             <span
-                                                class="text-xs font-bold text-blue-600 uppercase tracking-wide">Suggestion
-                                                du protocole</span>
+                                                class="text-xs font-bold text-blue-600 uppercase tracking-wide">{{ __('Protocol Suggestion') }}</span>
                                             <p class="text-sm text-gray-700 mt-1" id="suggestionText">
                                                 {{ $scan->suggested_treatment }}</p>
                                         </div>
 
                                         <button type="button" onclick="applySuggestion()"
                                             class="text-xs bg-white border border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white px-2 py-1 rounded transition shadow-sm font-semibold">
-                                            Utiliser
+                                            {{ __('Use') }}
                                         </button>
                                     </div>
                                 @endif
 
                                 <textarea name="prescription" id="prescriptionField" rows="3"
                                     class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    placeholder="Ex: Laser, injection, surveillance...">{{ $scan->prescription }}</textarea>
+                                    placeholder="{{ __('Ex: Laser, injection, monitoring...') }}">{{ $scan->prescription }}</textarea>
                             </div>
 
                             <div class="mb-6">
-                                <label class="block font-bold text-gray-700 text-sm mb-2">Notes Privées</label>
+                                <label
+                                    class="block font-bold text-gray-700 text-sm mb-2">{{ __('Private Notes') }}</label>
                                 <textarea name="doctor_notes" rows="2" class="w-full border-gray-300 rounded-md shadow-sm bg-yellow-50"
-                                    placeholder="Notes visibles uniquement par vous">{{ $scan->doctor_notes }}</textarea>
+                                    placeholder="{{ __('Notes visible only to you') }}">{{ $scan->doctor_notes }}</textarea>
                             </div>
 
                             <button type="submit"
                                 class="w-full bg-indigo-600 text-white font-bold py-3 rounded-md hover:bg-indigo-700 transition">
-                                Valider & Enregistrer
+                                {{ __('Validate & Save') }}
                             </button>
                         </form>
                     </div>

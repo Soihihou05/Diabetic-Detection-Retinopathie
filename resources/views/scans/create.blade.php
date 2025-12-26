@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Nouvelle Analyse : ') . $patient->last_name . ' ' . $patient->first_name }}
+            {{ __('New Analysis:') }} {{ $patient->last_name }} {{ $patient->first_name }}
         </h2>
     </x-slot>
 
@@ -16,7 +16,7 @@
                     <div>
                         <p class="font-bold text-gray-700">{{ $patient->last_name }} {{ $patient->first_name }}</p>
                         <p class="text-sm text-gray-500">
-                            {{ $patient->gender }} - {{ \Carbon\Carbon::parse($patient->date_of_birth)->age }} ans - {{ $patient->diabetes_type }}
+                            {{ __($patient->gender) }} - {{ \Carbon\Carbon::parse($patient->date_of_birth)->age }} {{ __('years') }} - {{ $patient->diabetes_type }}
                         </p>
                     </div>
                 </div>
@@ -25,21 +25,21 @@
                     @csrf
 
                     <div class="mb-6">
-                        <label class="block font-bold text-gray-700 mb-2">Quel œil analysez-vous ?</label>
+                        <label class="block font-bold text-gray-700 mb-2">{{ __('Which eye are you analyzing?') }}</label>
                         <div class="flex space-x-4">
                             <label class="flex items-center space-x-2 cursor-pointer bg-gray-100 p-4 rounded hover:bg-gray-200 transition w-full justify-center">
                                 <input type="radio" name="eye_side" value="OD" class="form-radio text-indigo-600 h-5 w-5" checked>
-                                <span class="font-bold">Œil Droit (OD)</span>
+                                <span class="font-bold">{{ __('Right Eye (OD)') }}</span>
                             </label>
                             <label class="flex items-center space-x-2 cursor-pointer bg-gray-100 p-4 rounded hover:bg-gray-200 transition w-full justify-center">
                                 <input type="radio" name="eye_side" value="OG" class="form-radio text-indigo-600 h-5 w-5">
-                                <span class="font-bold">Œil Gauche (OG)</span>
+                                <span class="font-bold">{{ __('Left Eye (OS)') }}</span>
                             </label>
                         </div>
                     </div>
 
                     <div class="mb-8">
-                        <label class="block font-bold text-gray-700 mb-2">Image du Fond d'Œil</label>
+                        <label class="block font-bold text-gray-700 mb-2">{{ __('Fundus Image') }}</label>
                         
                         <div class="border-2 border-dashed border-gray-300 rounded-lg p-2 relative h-64 flex justify-center items-center bg-gray-50 hover:bg-gray-100 transition overflow-hidden">
                             
@@ -49,14 +49,14 @@
                                 <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
-                                <p class="mt-1 text-sm text-gray-600">Cliquez ou glissez l'image ici</p>
-                                <p class="mt-1 text-xs text-gray-500">PNG, JPG (Max 10MB)</p>
+                                <p class="mt-1 text-sm text-gray-600">{{ __('Click or drag image here') }}</p>
+                                <p class="mt-1 text-xs text-gray-500">{{ __('PNG, JPG (Max 10MB)') }}</p>
                             </div>
 
                             <div id="imagePreview" class="absolute inset-0 w-full h-full hidden bg-white flex justify-center items-center">
                                 <img id="previewImg" src="" alt="Aperçu" class="max-h-full max-w-full object-contain p-2">
                                 <div class="absolute bottom-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-                                    Cliquez pour changer
+                                    {{ __('Click to change') }}
                                 </div>
                             </div>
 
@@ -64,9 +64,9 @@
                     </div>
 
                     <div class="flex justify-end">
-                        <a href="{{ route('patients.show', $patient->id) }}" class="text-gray-600 underline mr-6 self-center">Annuler</a>
+                        <a href="{{ route('patients.show', $patient->id) }}" class="text-gray-600 underline mr-6 self-center">{{ __('Cancel') }}</a>
                         <button type="submit" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded shadow hover:bg-indigo-700 transition transform hover:scale-105">
-                            Lancer l'Analyse IA 🚀
+                            {{ __('Start AI Analysis') }} 🚀
                         </button>
                     </div>
                 </form>
@@ -85,19 +85,13 @@
                 const reader = new FileReader();
 
                 reader.onload = function(e) {
-                    // On met l'image dans la balise <img>
                     previewImg.src = e.target.result;
-                    
-                    // On cache le texte "Cliquez ici"
                     placeholder.classList.add('hidden');
-                    
-                    // On affiche le conteneur de l'image
                     previewContainer.classList.remove('hidden');
                 }
 
                 reader.readAsDataURL(file);
             } else {
-                // Si l'utilisateur annule la sélection
                 previewImg.src = "";
                 placeholder.classList.remove('hidden');
                 previewContainer.classList.add('hidden');
