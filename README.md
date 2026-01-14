@@ -95,13 +95,13 @@ Avant de commencer, assurez-vous d'avoir installé :
 * MySQL (ou un serveur local type XAMPP/Laragon)
 
 ### Configuration PHP (Indispensable pour les rapports)
-Pour générer les rapports au format Image (.jpg) avec support des accents, l'extension GD doit être activée :
+Pour générer les rapports , l'extension GD doit être activée :
 
 1. **Ouvrez votre panneau de contrôle (ex: XAMPP)**
 
 2. **Éditez le fichier ``php.ini``**
 
-3. **Cherchez ``;extension=gd`` et retirez le point-virgule au début : extension=gd**
+3. **Cherchez ``;extension=gd`` et retirez le point-virgule au début : ``extension=gd``**
 
 4. **Redémarrez votre serveur Apache**
 
@@ -175,8 +175,11 @@ Puisque l'application utilise deux serveurs (Web et IA), vous devez ouvrir **deu
 À la racine du projet :
 ```bash
 php artisan serve
-
+```
 ### Terminal 2: Dans le dossier (`python_api/`)
 Lancer :
 ```bash
 python app.py
+```
+
+## **Pour Tous Problème, n'hesitez pas a me contacter sur ce mail:``soihihounourddine@gmail.com``**
