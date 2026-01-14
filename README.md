@@ -59,9 +59,9 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT). -->
 
 
-# 👁️ RetinoAI - Détection de Rétinopathie Diabétique Assistée par IA
+# 👁️ RetinoScan - Détection de la Rétinopathie Diabétique Assistée par IA
 
-**RetinoAI** est une plateforme web médicale conçue pour aider les ophtalmologues à gérer leurs patients et à détecter précocement la rétinopathie diabétique.
+**RetinoScan** est une plateforme web médicale conçue pour aider les ophtalmologues à gérer leurs patients et à détecter précocement la rétinopathie diabétique.
 
 L'application combine la robustesse de **Laravel** pour la gestion des dossiers médicaux et la puissance de **Python (Deep Learning)** pour l'analyse d'images de fond d'œil.
 
@@ -71,7 +71,7 @@ L'application combine la robustesse de **Laravel** pour la gestion des dossiers 
 
 Le projet fonctionne avec une architecture hybride :
 
-1.  **Frontend & Backend (Laravel)** : Gère l'authentification des médecins, les dossiers patients (CRUD), le stockage des images et l'interface utilisateur.
+1.  **Frontend & Backend (Laravel)** : Gère l'authentification des médecins, les dossiers patients (CRUD), le stockage des images, generation de rapport (Pdf/image) et l'interface utilisateur.
 2.  **Micro-service IA (Python/Flask)** : Une API locale qui reçoit l'image, la traite via un modèle **Hugging Face Transformers**, et renvoie le diagnostic.
 
 | Composant | Technologie | Rôle |
@@ -84,13 +84,26 @@ Le projet fonctionne avec une architecture hybride :
 
 ---
 
-## 📋 Prérequis
+## 📋 Prérequis & Configuration Systeme
+
+### Logiciels requis
 
 Avant de commencer, assurez-vous d'avoir installé :
 * PHP >= 8.1 & Composer
 * Python >= 3.9 & Pip
 * Node.js & NPM (pour le style)
 * MySQL (ou un serveur local type XAMPP/Laragon)
+
+### Configuration PHP (Indispensable pour les rapports)
+Pour générer les rapports au format Image (.jpg) avec support des accents, l'extension GD doit être activée :
+
+1. **Ouvrez votre panneau de contrôle (ex: XAMPP)**
+
+2. **Éditez le fichier ``php.ini``**
+
+3. **Cherchez ``;extension=gd`` et retirez le point-virgule au début : extension=gd**
+
+4. **Redémarrez votre serveur Apache**
 
 ---
 
@@ -162,3 +175,8 @@ Puisque l'application utilise deux serveurs (Web et IA), vous devez ouvrir **deu
 À la racine du projet :
 ```bash
 php artisan serve
+
+### Terminal 2: Dans le dossier (`python_api/`)
+Lancer :
+```bash
+python app.py
