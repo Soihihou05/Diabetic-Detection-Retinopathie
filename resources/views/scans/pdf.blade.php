@@ -120,7 +120,7 @@
                 <table cellpadding="0" cellspacing="0" style="margin-bottom: 5px;">
                     <tr>
                         <td style="vertical-align: middle; padding-right: 10px;">
-                            <img src="{{ public_path('storage/logo.png') }}" height="30" style="display: block;">
+                            <img src="{{ public_path('logo.png') }}" height="30" style="display: block;">
                         </td>
                         <td style="vertical-align: middle;">
                             <span style="font-size: 20px; font-weight: bold; color: #111; line-height: 1;">

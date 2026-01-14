@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>RetinaScan - Dépistage Assisté par IA</title>
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
@@ -50,21 +50,24 @@
                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
                     </div>
-                    <span class="font-bold text-2xl tracking-tight text-gray-900">Retina<span
-                            class="text-blue-600">Scan</span></span>
+                    <span class="font-bold text-2xl tracking-tight text-gray-900">{{ __('RetinaScan') }}</span>
                 </div>
 
-                <div class="hidden md:flex space-x-8">
+                <div class="hidden md:flex items-center space-x-8">
                     <a href="#home"
-                        class="text-gray-600 hover:text-blue-600 transition font-medium text-sm uppercase tracking-wide">Accueil</a>
+                        class="text-gray-600 hover:text-blue-600 transition font-medium text-sm uppercase tracking-wide">{{ __('Home') }}</a>
                     <a href="#solution"
-                        class="text-gray-600 hover:text-blue-600 transition font-medium text-sm uppercase tracking-wide">La
-                        Solution</a>
+                        class="text-gray-600 hover:text-blue-600 transition font-medium text-sm uppercase tracking-wide">{{ __('The Solution') }}</a>
                     <a href="#about"
-                        class="text-gray-600 hover:text-blue-600 transition font-medium text-sm uppercase tracking-wide">À
-                        Propos</a>
+                        class="text-gray-600 hover:text-blue-600 transition font-medium text-sm uppercase tracking-wide">{{ __('About') }}</a>
                     <a href="#contact"
-                        class="text-gray-600 hover:text-blue-600 transition font-medium text-sm uppercase tracking-wide">Contact</a>
+                        class="text-gray-600 hover:text-blue-600 transition font-medium text-sm uppercase tracking-wide">{{ __('Contact') }}</a>
+                    
+                    <!-- Bouton de changement de langue -->
+                    <a href="{{ route('lang.switch', app()->getLocale() == 'fr' ? 'en' : 'fr') }}" 
+                       class="px-3 py-1 border border-gray-300 rounded text-sm font-bold text-gray-600 hover:bg-gray-100 transition">
+                        {{ app()->getLocale() == 'fr' ? 'EN' : 'FR' }}
+                    </a>
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -77,16 +80,16 @@
                                         d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
                                     </path>
                                 </svg>
-                                Mon Tableau de Bord
+                                {{ __('My Dashboard') }}
                             </a>
                         @else
                             <a href="{{ route('login') }}"
-                                class="text-sm font-bold text-gray-700 hover:text-blue-600 transition px-4">Connexion</a>
+                                class="text-sm font-bold text-gray-700 hover:text-blue-600 transition px-4">{{ __('Login') }}</a>
 
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}"
                                     class="hidden sm:inline-block px-5 py-2.5 bg-gray-900 text-white rounded-full text-sm font-bold hover:bg-black transition shadow-md">
-                                    Inscription Médecin
+                                    {{ __('Doctor Registration') }}
                                 </a>
                             @endif
                         @endauth
@@ -102,22 +105,21 @@
             <div class="text-center max-w-3xl mx-auto">
                 <div
                     class="inline-flex items-center px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-widest mb-6">
-                    Nouvelle Version 2.0 avec IA
+                    {{ __('New Version 2.0 with AI') }}
                 </div>
                 <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 mb-6 leading-tight">
-                    L'IA au service de la <br />
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Santé
-                        Visuelle</span>
+                    {{ __('AI at the service of') }} <br />
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{{ __('Visual Health') }}</span>
                 </h1>
                 <p class="mt-6 text-xl text-gray-600 mb-10 leading-relaxed">
-                    RetinaScan utilise des modèles de <strong>Deep Learning</strong> avancés pour assister les
-                    ophtalmologistes dans la détection précoce de la <strong>rétinopathie diabétique</strong>.
+                    {{ __('RetinaScan uses advanced') }} <strong>{{ __('Deep Learning') }}</strong> {{ __('models to assist') }}
+                    {{ __('ophthalmologists in the early detection of') }} <strong>{{ __('diabetic retinopathy') }}</strong>.
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
                     @auth
                         <a href="{{ url('/dashboard') }}"
                             class="px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-xl hover:shadow-blue-500/30 flex items-center justify-center">
-                            Accéder aux Analyses
+                            {{ __('Access Analysis') }}
                             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -126,7 +128,7 @@
                     @else
                         <a href="{{ route('login') }}"
                             class="px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-xl hover:shadow-blue-500/30 flex items-center justify-center">
-                            Commencer le Diagnostic
+                            {{ __('Start Diagnosis') }}
                             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -134,7 +136,7 @@
                         </a>
                         <a href="#solution"
                             class="px-8 py-4 bg-white text-gray-700 border border-gray-200 rounded-xl font-bold text-lg hover:bg-gray-50 transition flex items-center justify-center">
-                            Comment ça marche ?
+                            {{ __('How it works?') }}
                         </a>
                     @endauth
                 </div>
@@ -157,8 +159,8 @@
     <section id="solution" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-20">
-                <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">Une technologie de pointe</h2>
-                <p class="mt-4 text-xl text-gray-500">Un workflow optimisé pour les médecins, du scan au rapport PDF.
+                <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">{{ __('State-of-the-art technology') }}</h2>
+                <p class="mt-4 text-xl text-gray-500">{{ __('An optimized workflow for doctors, from scan to PDF report.') }}
                 </p>
             </div>
 
@@ -173,9 +175,10 @@
                             </path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Analyse d'Images</h3>
-                    <p class="text-gray-600 leading-relaxed">Téléchargez un fond d'œil et obtenez en quelques secondes
-                        une classification du stade de la maladie (0 à 4) avec un score de confiance.</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">{{ __('Image Analysis') }}</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        {{ __('Upload a fundus image and get within seconds a classification of the disease stage (0 to 4) with a confidence score.') }}
+                    </p>
                 </div>
 
                 <div
@@ -188,9 +191,10 @@
                             </path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Rapports Médicaux</h3>
-                    <p class="text-gray-600 leading-relaxed">Générez automatiquement des rapports PDF professionnels,
-                        incluant le diagnostic, l'image analysée et votre signature électronique.</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">{{ __('Medical Reports') }}</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        {{ __('Automatically generate professional PDF reports, including diagnosis, analyzed image and your electronic signature.') }}
+                    </p>
                 </div>
 
                 <div
@@ -203,9 +207,10 @@
                             </path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Données Sécurisées</h3>
-                    <p class="text-gray-600 leading-relaxed">Chaque médecin dispose de son propre espace sécurisé. Les
-                        dossiers patients sont isolés et protégés contre les accès non autorisés.</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">{{ __('Secure Data') }}</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        {{ __('Each doctor has their own secure space. Patient records are isolated and protected from unauthorized access.') }}
+                    </p>
                 </div>
             </div>
         </div>
@@ -217,14 +222,12 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
             <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-blue-600 font-bold tracking-wide uppercase text-sm mb-3">Pathologie & Enjeux</h2>
-                <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Qu'est-ce que la Rétinopathie Diabétique
-                    ?</h3>
+                <h2 class="text-blue-600 font-bold tracking-wide uppercase text-sm mb-3">{{ __('Pathology & Issues') }}</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">{{ __('What is Diabetic Retinopathy?') }}
+                </h3>
                 <p class="text-lg text-gray-600 leading-relaxed">
-                    Première cause de cécité prévisible dans le monde, cette complication du diabète affecte les
-                    vaisseaux sanguins de la rétine.
-                    <span class="font-bold text-blue-700">Sans dépistage précoce, les lésions sont
-                        irréversibles.</span>
+                    {{ __('The leading cause of preventable blindness worldwide, this diabetes complication affects the blood vessels in the retina.') }}
+                    <span class="font-bold text-blue-700">{{ __('Without early screening, lesions are irreversible.') }}</span>
                 </p>
             </div>
 
@@ -237,19 +240,19 @@
                     <div class="relative bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
                         <div class="grid grid-cols-2 h-80">
                             <div class="relative h-full border-r-2 border-white">
-                                <img src="{{ asset('storage/imageSaine.png') }}" alt="Rétine Saine"
+                                <img src="{{ asset('imageSaine.png') }}" alt="{{ __('Healthy Retina') }}"
                                     class="absolute inset-0 w-full h-full object-cover">
                                 <div
                                     class="absolute bottom-0 left-0 right-0 bg-green-600/90 text-white text-center py-2 text-sm font-bold backdrop-blur-sm">
-                                    ✓ Rétine Saine
+                                    ✓ {{ __('Healthy Retina') }}
                                 </div>
                             </div>
                             <div class="relative h-full">
-                                <img src="{{ asset('storage/image.png') }}" alt="Rétine Malade"
+                                <img src="{{ asset('image.png') }}" alt="{{ __('Diseased Retina') }}"
                                     class="absolute inset-0 w-full h-full object-cover hue-rotate-15 contrast-125">
                                 <div
                                     class="absolute bottom-0 left-0 right-0 bg-red-600/90 text-white text-center py-2 text-sm font-bold backdrop-blur-sm">
-                                    ⚠ Rétinopathie Avancée
+                                    ⚠ {{ __('Advanced Retinopathy') }}
                                 </div>
 
                                 <div class="absolute top-1/3 left-1/4 w-4 h-4 bg-red-500 rounded-full animate-ping">
@@ -267,8 +270,7 @@
                             </div>
                         </div>
                     </div>
-                    <p class="text-xs text-gray-400 mt-2 text-center italic">Simulation visuelle des lésions
-                        rétiniennes (microanévrismes et hémorragies).</p>
+                    <p class="text-xs text-gray-400 mt-2 text-center italic">{{ __('Visual simulation of retinal lesions (microaneurysms and hemorrhages).') }}</p>
                 </div>
 
                 <div class="space-y-6">
@@ -277,9 +279,8 @@
                             class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold mt-1">
                             1</div>
                         <div class="ml-4">
-                            <h4 class="text-xl font-bold text-gray-900">Hyperglycémie Chronique</h4>
-                            <p class="text-gray-600 mt-1">L'excès de sucre dans le sang fragilise la paroi des
-                                capillaires rétiniens, entraînant une perte d'étanchéité.</p>
+                            <h4 class="text-xl font-bold text-gray-900">{{ __('Chronic Hyperglycemia') }}</h4>
+                            <p class="text-gray-600 mt-1">{{ __('Excess sugar in the blood weakens the walls of the retinal capillaries, leading to loss of integrity.') }}</p>
                         </div>
                     </div>
                     <div class="flex items-start">
@@ -287,9 +288,8 @@
                             class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold mt-1">
                             2</div>
                         <div class="ml-4">
-                            <h4 class="text-xl font-bold text-gray-900">Hémorragies & Exsudats</h4>
-                            <p class="text-gray-600 mt-1">Des micro-saignements et des dépôts de lipides apparaissent
-                                (les taches jaunes et rouges détectées par notre IA).</p>
+                            <h4 class="text-xl font-bold text-gray-900">{{ __('Hemorrhages & Exudates') }}</h4>
+                            <p class="text-gray-600 mt-1">{{ __('Micro-bleeding and lipid deposits appear (the yellow and red spots detected by our AI).') }}</p>
                         </div>
                     </div>
                     <div class="flex items-start">
@@ -297,46 +297,45 @@
                             class="flex-shrink-0 w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-white font-bold mt-1">
                             3</div>
                         <div class="ml-4">
-                            <h4 class="text-xl font-bold text-gray-900">Risque de Cécité</h4>
-                            <p class="text-gray-600 mt-1">Sans traitement, de nouveaux vaisseaux fragiles se forment
-                                (prolifération), menant au décollement de la rétine.</p>
+                            <h4 class="text-xl font-bold text-gray-900">{{ __('Risk of Blindness') }}</h4>
+                            <p class="text-gray-600 mt-1">{{ __('Without treatment, new fragile vessels form (proliferation), leading to retinal detachment.') }}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="bg-gray-50 rounded-3xl p-8 md:p-12 border border-gray-100">
-                <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Les 5 Stades détectés par RetinaScan</h3>
+                <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">{{ __('The 5 Stages detected by RetinaScan') }}</h3>
 
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                     <div class="bg-white p-4 rounded-xl shadow-sm text-center border-b-4 border-green-500">
-                        <div class="text-lg font-bold text-gray-900 mb-1">Stade 0</div>
-                        <div class="text-xs font-bold text-green-600 uppercase mb-2">Absence</div>
-                        <p class="text-xs text-gray-500">Rétine normale, aucun signe visible.</p>
+                        <div class="text-lg font-bold text-gray-900 mb-1">{{ __('Stage 0') }}</div>
+                        <div class="text-xs font-bold text-green-600 uppercase mb-2">{{ __('Absent') }}</div>
+                        <p class="text-xs text-gray-500">{{ __('Normal retina, no visible signs.') }}</p>
                     </div>
 
                     <div class="bg-white p-4 rounded-xl shadow-sm text-center border-b-4 border-blue-400">
-                        <div class="text-lg font-bold text-gray-900 mb-1">Stade 1</div>
-                        <div class="text-xs font-bold text-blue-500 uppercase mb-2">Légère</div>
-                        <p class="text-xs text-gray-500">Présence de microanévrismes isolés.</p>
+                        <div class="text-lg font-bold text-gray-900 mb-1">{{ __('Stage 1') }}</div>
+                        <div class="text-xs font-bold text-blue-500 uppercase mb-2">{{ __('Mild') }}</div>
+                        <p class="text-xs text-gray-500">{{ __('Presence of isolated microaneurysms.') }}</p>
                     </div>
 
                     <div class="bg-white p-4 rounded-xl shadow-sm text-center border-b-4 border-yellow-400">
-                        <div class="text-lg font-bold text-gray-900 mb-1">Stade 2</div>
-                        <div class="text-xs font-bold text-yellow-600 uppercase mb-2">Modérée</div>
-                        <p class="text-xs text-gray-500">Hémorragies plus nombreuses.</p>
+                        <div class="text-lg font-bold text-gray-900 mb-1">{{ __('Stage 2') }}</div>
+                        <div class="text-xs font-bold text-yellow-600 uppercase mb-2">{{ __('Moderate') }}</div>
+                        <p class="text-xs text-gray-500">{{ __('More numerous hemorrhages.') }}</p>
                     </div>
 
                     <div class="bg-white p-4 rounded-xl shadow-sm text-center border-b-4 border-orange-500">
-                        <div class="text-lg font-bold text-gray-900 mb-1">Stade 3</div>
-                        <div class="text-xs font-bold text-orange-600 uppercase mb-2">Sévère</div>
-                        <p class="text-xs text-gray-500">Signes pré-proliférants multiples.</p>
+                        <div class="text-lg font-bold text-gray-900 mb-1">{{ __('Stage 3') }}</div>
+                        <div class="text-xs font-bold text-orange-600 uppercase mb-2">{{ __('Severe') }}</div>
+                        <p class="text-xs text-gray-500">{{ __('Multiple pre-proliferative signs.') }}</p>
                     </div>
 
                     <div class="bg-white p-4 rounded-xl shadow-sm text-center border-b-4 border-red-600">
-                        <div class="text-lg font-bold text-gray-900 mb-1">Stade 4</div>
-                        <div class="text-xs font-bold text-red-600 uppercase mb-2">Proliférante</div>
-                        <p class="text-xs text-gray-500">Néovaisseaux, risque imminent.</p>
+                        <div class="text-lg font-bold text-gray-900 mb-1">{{ __('Stage 4') }}</div>
+                        <div class="text-xs font-bold text-red-600 uppercase mb-2">{{ __('Proliferative') }}</div>
+                        <p class="text-xs text-gray-500">{{ __('Neovascularization, imminent risk.') }}</p>
                     </div>
                 </div>
             </div>
@@ -344,15 +343,15 @@
             <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                 <div>
                     <span class="block text-4xl font-extrabold text-blue-600">463 M</span>
-                    <span class="text-sm text-gray-500 font-medium">Diabétiques dans le monde</span>
+                    <span class="text-sm text-gray-500 font-medium">{{ __('Diabetics worldwide') }}</span>
                 </div>
                 <div>
-                    <span class="block text-4xl font-extrabold text-blue-600">1 sur 3</span>
-                    <span class="text-sm text-gray-500 font-medium">Développera une rétinopathie</span>
+                    <span class="block text-4xl font-extrabold text-blue-600">1 {{ __('in') }} 3</span>
+                    <span class="text-sm text-gray-500 font-medium">{{ __('Will develop retinopathy') }}</span>
                 </div>
                 <div>
                     <span class="block text-4xl font-extrabold text-blue-600">95%</span>
-                    <span class="text-sm text-gray-500 font-medium">Évitable si détecté tôt</span>
+                    <span class="text-sm text-gray-500 font-medium">{{ __('Preventable if detected early') }}</span>
                 </div>
             </div>
 
@@ -364,10 +363,9 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
 
                 <div>
-                    <h2 class="text-3xl font-bold text-gray-900 mb-6">Contact & Support</h2>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ __('Contact & Support') }}</h2>
                     <p class="text-gray-600 mb-8 text-lg">
-                        Vous êtes un établissement de santé ou un praticien et souhaitez intégrer RetinaScan ? Notre
-                        équipe est à votre disposition.
+                        {{ __('You are a healthcare institution or a practitioner and want to integrate RetinaScan? Our team is at your disposal.') }}
                     </p>
 
                     <div class="space-y-6">
@@ -381,7 +379,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-900">Email</h4>
+                                <h4 class="font-bold text-gray-900">{{ __('Email') }}</h4>
                                 <p class="text-gray-600">contact@retinascan.med</p>
                             </div>
                         </div>
@@ -397,8 +395,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-900">Adresse</h4>
-                                <p class="text-gray-600">Pôle Technologique Santé, Casablanca</p>
+                                <h4 class="font-bold text-gray-900">{{ __('Address') }}</h4>
+                                <p class="text-gray-600">{{ __('Health Technology Hub, Casablanca') }}</p>
                             </div>
                         </div>
                     </div>
@@ -407,31 +405,29 @@
                 <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl">
                     <form action="#" class="space-y-5">
                         <div>
-                            <label for="name" class="block text-sm font-bold text-gray-700 mb-1">Nom du Médecin /
-                                Clinique</label>
+                            <label for="name" class="block text-sm font-bold text-gray-700 mb-1">{{ __('Doctor / Clinic Name') }}</label>
                             <input type="text" id="name"
                                 class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                                placeholder="Dr. ...">
+                                placeholder="{{ __('Dr. ...') }}">
                         </div>
 
                         <div>
-                            <label for="email" class="block text-sm font-bold text-gray-700 mb-1">Email
-                                Professionnel</label>
+                            <label for="email" class="block text-sm font-bold text-gray-700 mb-1">{{ __('Professional Email') }}</label>
                             <input type="email" id="email"
                                 class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                                placeholder="contact@clinique.com">
+                                placeholder="contact@clinic.com">
                         </div>
 
                         <div>
-                            <label for="message" class="block text-sm font-bold text-gray-700 mb-1">Message</label>
+                            <label for="message" class="block text-sm font-bold text-gray-700 mb-1">{{ __('Message') }}</label>
                             <textarea id="message" rows="4"
                                 class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                                placeholder="Demande de démo..."></textarea>
+                                placeholder="{{ __('Demo request...') }}"></textarea>
                         </div>
 
                         <button type="button"
                             class="w-full py-4 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition transform hover:-translate-y-0.5 shadow-lg">
-                            Envoyer la demande
+                            {{ __('Send Request') }}
                         </button>
                     </form>
                 </div>
@@ -450,17 +446,16 @@
                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
                     </div>
-                    <span class="font-bold text-xl text-gray-900">RetinaScan</span>
+                    <span class="font-bold text-xl text-gray-900">{{ __('RetinaScan') }}</span>
                 </div>
                 <div class="flex space-x-8 text-sm font-medium">
-                    <a href="#" class="text-gray-500 hover:text-blue-600 transition">Mentions légales</a>
-                    <a href="#" class="text-gray-500 hover:text-blue-600 transition">Confidentialité Données
-                        Santé</a>
-                    <a href="#" class="text-gray-500 hover:text-blue-600 transition">Support</a>
+                    <a href="#" class="text-gray-500 hover:text-blue-600 transition">{{ __('Legal Notice') }}</a>
+                    <a href="#" class="text-gray-500 hover:text-blue-600 transition">{{ __('Health Data Privacy') }}</a>
+                    <a href="#" class="text-gray-500 hover:text-blue-600 transition">{{ __('Support') }}</a>
                 </div>
             </div>
             <div class="mt-8 text-center text-xs text-gray-400">
-                &copy; {{ date('Y') }} RetinaScan Project. Tous droits réservés.
+                &copy; {{ date('Y') }} RetinaScan Project. {{ __('All rights reserved.') }}
             </div>
         </div>
     </footer>

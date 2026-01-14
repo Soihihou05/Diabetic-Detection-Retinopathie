@@ -84,7 +84,7 @@ Le projet fonctionne avec une architecture hybride :
 
 ---
 
-## 📋 Prérequis & Configuration Systeme
+## 📋 Prérequis
 
 ### Logiciels requis
 
@@ -93,17 +93,6 @@ Avant de commencer, assurez-vous d'avoir installé :
 * Python >= 3.9 & Pip
 * Node.js & NPM (pour le style)
 * MySQL (ou un serveur local type XAMPP/Laragon)
-
-### Configuration PHP (Indispensable pour les rapports)
-Pour générer les rapports , l'extension GD doit être activée :
-
-1. **Ouvrez votre panneau de contrôle (ex: XAMPP)**
-
-2. **Éditez le fichier ``php.ini``**
-
-3. **Cherchez ``;extension=gd`` et retirez le point-virgule au début : ``extension=gd``**
-
-4. **Redémarrez votre serveur Apache**
 
 ---
 
@@ -181,5 +170,18 @@ Lancer :
 ```bash
 python app.py
 ```
+---
 
+### Configuration PHP (Indispensable pour les rapports)
+Pour générer les rapports , l'extension GD doit être activée :
+
+1. **Ouvrez votre panneau de contrôle (ex: XAMPP)**
+
+2. **Éditez le fichier ``php.ini``**
+
+3. **Cherchez ``;extension=gd`` et retirez le point-virgule au début : ``extension=gd``**
+
+4. **Redémarrez votre serveur Apache**
+
+---
 ## Pour Tous Problème, n'hesitez pas a me contacter sur ce mail:**``soihihounourddine@gmail.com``**

@@ -215,11 +215,11 @@
                                         d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
                                     </path>
                                 </svg>
-                                Validation & Signature
+                                {{__('Validate & Sign')}}
                             </h3>
 
                             <p class="text-sm text-gray-500 mb-4 text-center">
-                                Veuillez signer ci-dessous pour générer le rapport PDF officiel.
+                                {{__('Please sign below to generate the official PDF report.')}}
                             </p>
 
                             <div
@@ -229,14 +229,14 @@
 
                                 <div
                                     class="absolute bottom-2 right-2 text-xs text-gray-400 pointer-events-none select-none">
-                                    Signez ici (Souris ou Doigt)
+                                    {{__('Sign here (Mouse or Finger)')}}
                                 </div>
                             </div>
 
                             <div class="flex justify-between items-center mt-4 max-w-md mx-auto">
                                 <button type="button" id="clear-signature"
                                     class="text-sm text-red-500 hover:text-red-700 underline decoration-red-500/30">
-                                    Effacer / Recommencer
+                                    {{__('Clear / Restart')}}
                                 </button>
 
                                 <form id="signature-form" action="{{ route('scans.pdf', $scan->id) }}"
@@ -249,8 +249,8 @@
                                         <div class="relative w-full sm:w-auto">
                                             <select name="format"
                                                 class="block w-full sm:w-64 border-gray-300 bg-white text-gray-700 py-2.5 px-4 pr-8 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm transition ease-in-out duration-150 cursor-pointer">
-                                                <option value="pdf">📄 Format PDF (Recommandé)</option>
-                                                <option value="image">🖼️ Format Image (JPG)</option>
+                                                <option value="pdf">{{__('📄 PDF Format (Recommended)')}}</option>
+                                                <option value="image">{{__('🖼️ Image Format (JPG)')}}</option>
                                             </select>
                                         </div>
 
@@ -264,7 +264,7 @@
                                                 </path>
                                             </svg>
 
-                                            Valider & Télécharger
+                                            {{__('Validate & Download')}}
                                         </button>
 
                                     </div>
@@ -317,7 +317,7 @@
                     // 3. Bouton Valider
                     saveBtn.addEventListener('click', function() {
                         if (signaturePad.isEmpty()) {
-                            alert("Veuillez apposer votre signature avant de télécharger le rapport.");
+                            alert(`{{__('Please sign before downloading the report.')}}`);
                         } else {
                             // On récupère l'image en Base64
                             var data = signaturePad.toDataURL('image/png');
@@ -327,12 +327,12 @@
                             form.submit();
 
                             // Petit effet visuel optionnel
-                            saveBtn.innerText = "Génération en cours...";
+                            saveBtn.innerText = "{{__('Generating...')}}";
                             saveBtn.disabled = true;
 
                             // On réactive le bouton après quelques secondes (au cas où le téléchargement échoue)
                             setTimeout(() => {
-                                saveBtn.innerText = "Valider & Télécharger";
+                                saveBtn.innerText = "{{__('Validate & Download')}}";
                                 saveBtn.disabled = false;
                             }, 5000);
                         }

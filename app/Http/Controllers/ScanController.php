@@ -346,7 +346,7 @@ class ScanController extends Controller
             $y = 50;
 
             // LOGO & TITRE
-            $logoPath = public_path('storage/logo.png');
+            $logoPath = public_path('logo.png');
             if (file_exists($logoPath)) {
                 $logoSrc = imagecreatefrompng($logoPath);
                 $logoW = imagesx($logoSrc);
