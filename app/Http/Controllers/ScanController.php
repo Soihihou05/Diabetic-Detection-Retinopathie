@@ -278,37 +278,249 @@ class ScanController extends Controller
         // 1. Sécurité
         if ($scan->patient->user_id !== Auth::id()) abort(403);
 
-        // 2. Préparation des données
-        //  Validation : on vérifie juste qu'on a reçu le dessin
+        // 2. Validation et Récupération
         $request->validate(['signature' => 'required']);
 
-        // On récupère directement le code Base64 (ex: "data:image/png;base64,iVBOR...")
-        // C'est ça qui contient l'image. On ne le stocke pas, on le passe à la vue.
+        $format = $request->input('format', 'pdf');
         $signatureData = $request->input('signature');
-        //////////////////////////////////////////////////////////
+
+        // 3. Génération du nom de fichier propre
         $cleanName = Str::slug($scan->patient->last_name . '-' . $scan->patient->first_name);
         $typeDiabete = Str::slug($scan->patient->diabetes_type ?? 'inconnu');
-        $eye = $scan->eye_side; // On garde le même œil
+        $eye = $scan->eye_side;
         $timestamp = time();
 
-        $fileName = "{$cleanName}_{$eye}_{$typeDiabete}_{$timestamp}.pdf";
+        // Nom de base sans extension
+        $baseFileName = "Rapport_{$cleanName}_{$eye}_{$typeDiabete}_{$timestamp}";
+
+        // ==========================================
+        // OPTION A : GÉNÉRATION IMAGE (JPG)
+        // ==========================================
+        if ($format === 'image') {
+
+            // 1. Toile Blanche (Format A4 approx)
+            $width = 800;
+            $height = 1100; // Hauteur légèrement réduite pour plus de compacité
+            $img = imagecreatetruecolor($width, $height);
+
+            // 2. Définition des couleurs
+            $white = imagecolorallocate($img, 255, 255, 255);
+            $black = imagecolorallocate($img, 30, 30, 30);
+            $grayText = imagecolorallocate($img, 100, 100, 100);
+            $blue = imagecolorallocate($img, 37, 99, 235); // Bleu RetinaScan
+            $lightGray = imagecolorallocate($img, 243, 244, 246);
+            $borderGray = imagecolorallocate($img, 220, 220, 220);
+
+            // Remplir le fond en blanc
+            imagefilledrectangle($img, 0, 0, $width, $height, $white);
+
+            // 3. CONFIGURATION POLICE (Votre chemin spécifique)
+            $fontPath = public_path('fonts/OpenSans-VariableFont_wdth_wght.ttf');
+            $hasFont = file_exists($fontPath);
+
+            // --- Fonction Helper pour écrire du texte avec accents ---
+            $text = function ($size, $x, $y, $content, $color) use ($img, $fontPath, $hasFont) {
+                if ($hasFont) {
+                    imagettftext($img, $size, 0, $x, $y, $color, $fontPath, $content);
+                } else {
+                    $gdSize = max(1, min(5, round($size / 3)));
+                    imagestring($img, $gdSize, $x, $y - 15, utf8_decode($content), $color);
+                }
+            };
+
+            // --- Fonction Helper pour centrer du texte ---
+            $center = function ($size, $y, $content, $color, $maxWidth) use ($img, $fontPath, $hasFont, $text) {
+                if ($hasFont) {
+                    $box = imagettfbbox($size, 0, $fontPath, $content);
+                    $textW = abs($box[4] - $box[0]);
+                    $x = ($maxWidth - $textW) / 2;
+                    $text($size, $x, $y, $content, $color);
+                } else {
+                    $fontW = imagefontwidth(4);
+                    $x = ($maxWidth - (strlen($content) * $fontW)) / 2;
+                    imagestring($img, 4, $x, $y - 15, utf8_decode($content), $color);
+                }
+            };
+
+            // --- DÉBUT DU DESSIN DU RAPPORT (Compact) ---
+            $y = 50;
+
+            // LOGO & TITRE
+            $logoPath = public_path('storage/logo.png');
+            if (file_exists($logoPath)) {
+                $logoSrc = imagecreatefrompng($logoPath);
+                $logoW = imagesx($logoSrc);
+                $logoH = imagesy($logoSrc);
+                $newLogoH = 35;
+                $newLogoW = ($logoW / $logoH) * $newLogoH;
+
+                imagecopyresampled($img, $logoSrc, 40, $y - 30, 0, 0, $newLogoW, $newLogoH, $logoW, $logoH);
+                $text(20, 40 + $newLogoW + 12, $y, "RetinaScan", $blue);
+            } else {
+                $text(20, 40, $y, "RetinaScan", $blue);
+            }
+            $text(9, 40, $y + 20, "Cabinet d'Ophtalmologie", $grayText);
+
+            // INFO DOCTEUR (Droite)
+            $docName = "Dr. " . Auth::user()->name;
+            $dateText = "Le " . now()->format('d/m/Y');
+
+            if ($hasFont) {
+                $box = imagettfbbox(11, 0, $fontPath, $docName);
+                $w = abs($box[4] - $box[0]);
+                $text(11, $width - 40 - $w, $y, $docName, $black);
+
+                $boxD = imagettfbbox(9, 0, $fontPath, $dateText);
+                $wD = abs($boxD[4] - $boxD[0]);
+                $text(9, $width - 40 - $wD, $y + 18, $dateText, $grayText);
+            } else {
+                imagestring($img, 4, $width - 200, $y - 10, utf8_decode($docName), $black);
+                imagestring($img, 2, $width - 200, $y + 10, $dateText, $grayText);
+            }
+
+            // Ligne de séparation fine
+            $y += 40;
+            imagefilledrectangle($img, 40, $y, $width - 40, $y + 1, $blue);
+            $y += 25;
+
+            // SECTION PATIENT (Compacte)
+            imagefilledrectangle($img, 40, $y, $width - 40, $y + 28, $lightGray);
+            imagefilledrectangle($img, 40, $y, 44, $y + 28, $blue);
+            $text(10, 55, $y + 20, "PATIENT", $black);
+            $y += 50;
+
+            $text(10, 40, $y, "Nom :", $black);
+            $text(11, 130, $y, strtoupper($scan->patient->last_name) . " " . $scan->patient->first_name, $black);
+
+            $text(10, 420, $y, "Dossier :", $black);
+            $text(11, 510, $y, "#" . $scan->patient->id, $black);
+            $y += 28;
+
+            $text(10, 40, $y, "Né(e) le :", $black);
+            $text(11, 130, $y, \Carbon\Carbon::parse($scan->patient->date_of_birth)->format('d/m/Y'), $black);
+
+            $text(10, 420, $y, "Diabète :", $black);
+            $text(11, 510, $y, $scan->patient->diabetes_type ?? 'Non spécifié', $black);
+            $y += 45;
+
+            // SECTION IMAGERIE
+            imagefilledrectangle($img, 40, $y, $width - 40, $y + 28, $lightGray);
+            imagefilledrectangle($img, 40, $y, 44, $y + 28, $blue);
+            $text(10, 55, $y + 20, "IMAGERIE RÉTINIENNE", $black);
+            $y += 40;
+
+            $scanPath = public_path('storage/' . $scan->image_path);
+            if (file_exists($scanPath)) {
+                $info = getimagesize($scanPath);
+                $source = null;
+                if ($info['mime'] == 'image/jpeg') $source = imagecreatefromjpeg($scanPath);
+                elseif ($info['mime'] == 'image/png') $source = imagecreatefrompng($scanPath);
+
+                if ($source) {
+                    $sw = imagesx($source);
+                    $sh = imagesy($source);
+
+                    $maxW = $width - 100;
+                    $maxH = 300;
+                    $ratio = $sw / $sh;
+
+                    $targetH = $maxH;
+                    $targetW = $targetH * $ratio;
+                    if ($targetW > $maxW) {
+                        $targetW = $maxW;
+                        $targetH = $targetW / $ratio;
+                    }
+
+                    $posX = ($width - $targetW) / 2;
+                    imagefilledrectangle($img, $posX - 1, $y - 1, $posX + $targetW + 1, $y + $targetH + 1, $borderGray);
+                    imagecopyresampled($img, $source, $posX, $y, 0, 0, $targetW, $targetH, $sw, $sh);
+                    $y += $targetH + 15;
+
+                    $legend = ($scan->eye_side == 'OD' ? 'Œil Droit (OD)' : 'Œil Gauche (OG)') . " | " . $scan->created_at->format('d/m/Y H:i');
+                    $center(9, $y, $legend, $grayText, $width);
+                    $y += 35;
+                    imagedestroy($source);
+                }
+            }
+
+            // --- DIAGNOSTIC ---
+            imagefilledrectangle($img, 40, $y, $width - 40, $y + 28, $lightGray);
+            imagefilledrectangle($img, 40, $y, 44, $y + 28, $blue);
+            $text(10, 55, $y + 20, "DIAGNOSTIC & CONCLUSION", $black);
+            $y += 40;
+
+            imagerectangle($img, 40, $y - 10, $width - 40, $y + 55, $black);
+            $text(11, 55, $y + 15, "Diagnostic :", $black);
+            $text(12, 160, $y + 15, $scan->final_diagnosis ?? 'Non défini', $black);
+
+            $iaText = "(IA : " . ($scan->ai_result ?? 'N/A') . " - " . ($scan->ai_confidence ?? 0) . "%)";
+            $text(8, 55, $y + 38, $iaText, $grayText);
+            $y += 75;
+
+            // --- PRESCRIPTION ---
+
+            imagefilledrectangle($img, 40, $y, $width - 40, $y + 28, $lightGray);
+            imagefilledrectangle($img, 40, $y, 44, $y + 28, $blue);
+            $text(10, 55, $y + 20, "PRESCRIPTION", $black);
+            $y += 40;
+            if ($scan->prescription) {
+                $wrappedText = wordwrap($scan->prescription, 85, "\n", true);
+                foreach (explode("\n", $wrappedText) as $line) {
+                    $text(10, 45, $y, $line, $black);
+                    $y += 20;
+                }
+                $y += 25;
+            }
+
+            // --- SIGNATURE (Plus discrète) ---
+            if ($signatureData) {
+                $sigData = explode(',', $signatureData);
+                if (count($sigData) > 1) {
+                    $sigContent = base64_decode($sigData[1]);
+                    $sigSource = imagecreatefromstring($sigContent);
+                    if ($sigSource) {
+                        $sw = imagesx($sigSource);
+                        $sh = imagesy($sigSource);
+                        $newSW = 140;
+                        $newSH = ($sh / $sw) * $newSW;
+                        $sigX = $width - 200;
+
+                        imagecopyresampled($img, $sigSource, $sigX, $y, 0, 0, $newSW, $newSH, $sw, $sh);
+                        imageline($img, $sigX, $y + $newSH + 5, $width - 60, $y + $newSH + 5, $black);
+                        $text(9, $sigX + 10, $y + $newSH + 18, "Dr. " . Auth::user()->name, $black);
+                        imagedestroy($sigSource);
+                    }
+                }
+            }
+
+            // --- FOOTER ---
+            $footerText = "Document généré par RetinaScan - Validé électroniquement.";
+            imageline($img, 40, $height - 40, $width - 40, $height - 40, $borderGray);
+            $center(8, $height - 20, $footerText, $grayText, $width);
+
+            // Téléchargement
+            return response()->streamDownload(function () use ($img) {
+                imagejpeg($img, null, 90);
+                imagedestroy($img);
+            }, $baseFileName . '.jpg');
+        }
+
+        // ==========================================
+        // OPTION B : GÉNÉRATION PDF (Défaut)
+        // ==========================================
+
         $data = [
             'scan' => $scan,
             'patient' => $scan->patient,
             'doctor' => Auth::user(),
             'date' => now()->format('d/m/Y'),
-            // Astuce pour l'image en PDF : convertir en base64 pour éviter les bugs de chemin
             'imagePath' => public_path('storage/' . $scan->image_path),
             'signatureData' => $signatureData,
         ];
 
-        // 3. Génération du PDF
         $pdf = Pdf::loadView('scans.pdf', $data);
-
-        // Optionnel : Configurer le format papier
         $pdf->setPaper('A4', 'portrait');
 
-        // 4. Téléchargement direct
-        return $pdf->download('Rapport_Medical_' . $fileName);
+        return $pdf->download($baseFileName . '.pdf');
     }
 }

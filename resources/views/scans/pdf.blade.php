@@ -117,9 +117,21 @@
     <table class="header-table">
         <tr>
             <td valign="top">
-                <div class="logo">RetinaScan</div>
-                <div>Cabinet d'Ophtalmologie</div>
+                <table cellpadding="0" cellspacing="0" style="margin-bottom: 5px;">
+                    <tr>
+                        <td style="vertical-align: middle; padding-right: 10px;">
+                            <img src="{{ public_path('storage/logo.png') }}" height="30" style="display: block;">
+                        </td>
+                        <td style="vertical-align: middle;">
+                            <span style="font-size: 20px; font-weight: bold; color: #111; line-height: 1;">
+                                Retina<span style="color: #2563eb;">Scan</span>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+                <div style="font-size: 12px; color: #555;">Cabinet d'Ophtalmologie</div>
             </td>
+
             <td valign="top" style="text-align: right;">
                 <strong>Dr. {{ $doctor->name }}</strong><br>
                 {{ $date }}
@@ -137,7 +149,7 @@
         </tr>
         <tr>
             <td class="bold">Né(e) le :</td>
-            <td>{{ \Carbon\Carbon::parse($patient->birth_date)->format('d/m/Y') }}</td>
+            <td>{{ $patient->date_of_birth->format('d/m/Y') }}</td>
             <td class="bold">Diabète :</td>
             <td>{{ $patient->diabetes_type }}</td>
         </tr>
@@ -159,12 +171,14 @@
             {{ $scan->ai_confidence }}%)</p>
     </div>
 
-    @if ($scan->prescription)
-        <div class="section-title">Prescription</div>
-        <div style="padding: 5px; background: #fff; border: 1px solid #eee; min-height: 40px;">
+
+    <div class="section-title">Prescription</div>
+    <div style="padding: 5px; background: #fff; border: 1px solid #eee; min-height: 40px;">
+        @if ($scan->prescription)
             {!! nl2br(e($scan->prescription)) !!}
-        </div>
-    @endif
+        @endif
+    </div>
+
 
     <div class="signature-section">
         <div class="signature-box">
@@ -181,7 +195,7 @@
     </div>
 
     <div class="footer">
-        Document généré par RetinaScan - Validé électroniquement.
+        @ Document généré par RetinaScan - Validé électroniquement.
     </div>
 
 </body>

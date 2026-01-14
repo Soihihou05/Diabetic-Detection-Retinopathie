@@ -244,25 +244,41 @@
                                     @csrf
 
                                     <input type="hidden" name="signature" id="signature-input">
+                                    <div class="flex flex-col items-center gap-3 w-full sm:w-auto">
 
-                                    <button type="button" id="save-signature"
-                                        class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0L8 8m4-4v12">
-                                            </path>
-                                        </svg>
-                                        Valider & Télécharger
-                                    </button>
+                                        <div class="relative w-full sm:w-auto">
+                                            <select name="format"
+                                                class="block w-full sm:w-64 border-gray-300 bg-white text-gray-700 py-2.5 px-4 pr-8 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm transition ease-in-out duration-150 cursor-pointer">
+                                                <option value="pdf">📄 Format PDF (Recommandé)</option>
+                                                <option value="image">🖼️ Format Image (JPG)</option>
+                                            </select>
+                                        </div>
+
+                                        <button type="button" id="save-signature"
+                                            class="w-full sm:w-64 inline-flex justify-center items-center px-6 py-2.5 bg-indigo-600 border border-transparent rounded-lg font-bold text-xs text-white uppercase tracking-widest shadow-md hover:bg-indigo-700 hover:shadow-lg focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5">
+
+                                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0L8 8m4-4v12">
+                                                </path>
+                                            </svg>
+
+                                            Valider & Télécharger
+                                        </button>
+
+                                    </div>
                                 </form>
                             </div>
+
                         </div>
                     @endif
-
                 </div>
+
+
             </div>
         </div>
+    </div>
     </div>
     @section('script')
         <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>

@@ -7,7 +7,7 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+<!-- ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
@@ -56,7 +56,7 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT). -->
 
 
 # 👁️ RetinoAI - Détection de Rétinopathie Diabétique Assistée par IA
@@ -100,7 +100,7 @@ Avant de commencer, assurez-vous d'avoir installé :
 
 1.  **Cloner le dépôt :**
     ```bash
-    git clone [https://github.com/votre-utilisateur/projet-ia-retino.git](https://github.com/votre-utilisateur/projet-ia-retino.git)
+    git clone [https://github.com/Soihihou05/Diabetic-Detection-Retinopathie.git](https://github.com/Soihihou05/Diabetic-Detection-Retinopathie.git)
     cd projet-ia-retino
     ```
 
